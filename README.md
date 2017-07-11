@@ -28,6 +28,14 @@ As a pragmatic programmer, the next thing I am conserned with is this: What happ
 
 If an exception is caused in function update, then it is silently ignored by Elmish.WPF, unless ...
 
-Elmish.WPF has a handler that we can hook into in order to handle unhandled exceptions in function update. This is very easy, and demonstrated in the source. Exceptions are then no longer silently ignored.
+Elmish.WPF has a handler - onError - that we can hook into in order to handle unhandled exceptions in function update. This is very easy, and demonstrated in the source. Exceptions are then no longer silently ignored.
 
 If an exception is caused in function view, then the application simply terminates promptly. That's really bad. To fix this behavior, we need to hook into Application.DispatcherUnhandledException, which turns out not to be that easy. In the source for Program.fs of Elmish.WPF itself, we can see the application object being created, but it is not exposed in any way by Elmish.WPF. Fortunately, in order to get at it, we can use Application.Current. This however is null before the call to Program.RunWindow - naturally. The earliest chance we have of getting to it, seems to be in the Loaded event of the main window. That's good enough, for now at least. In that handler we can hook into the exception handler. Very important: In dispatcherUnhandledException we set Handled=true, so that the application will continue to run.
+
+Final notes
+
+I haven't yet checked what happens if an exception occurs in the init function, but I assume it would be the same as the update function.
+
+I haven't demonstrated the use of AppDomain.CurrentDomain.UnhandledException or Threading.Thread.GetDomain().UnhandledException, but I don't think it's relevant here. I do hook up even these in my commercial applications.
+
+If you look up the issue https://github.com/Prolucid/Elmish.WPF/issues/14 you will find an interesting comment from et1975 regarding exception handling in Elmish.WPF.
