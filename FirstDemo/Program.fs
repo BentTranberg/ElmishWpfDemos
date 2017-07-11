@@ -4,18 +4,16 @@ open System
 open Elmish
 open Elmish.WPF
 
-module Types =
+type Msg =
+    | Increment
+    | Decrement
+    | CauseCrash
 
-    type Msg =
-        | Increment
-        | Decrement
-        | CauseCrash
-    
-    type Model = { Count: int }
+type Model = { Count: int }
 
 module State =
 
-    open Types
+    //open Types
 
     let causeCrash() = 13 / 0 |> ignore
 
@@ -33,7 +31,7 @@ module App =
 
     open System.Windows
     open System.Windows.Threading
-    open Types
+    //open Types
     open State
 
     let view _ _ =
@@ -59,9 +57,11 @@ module App =
         app.ShutdownMode <- ShutdownMode.OnMainWindowClose
         ()
 
+    type MainWindow = FsXaml.XAML<"MainWindow.xaml">
+
     [<EntryPoint;STAThread>]
     let main argv =
-        let window = FirstDemoViews.MainWindow()
+        let window = MainWindow()
         window.Loaded.Add windowLoaded
         Program.mkSimple init update view
         |> fun p -> { p with onError = elmishErrorHandler }
