@@ -10,5 +10,6 @@
         <TextBox Text="{Binding Count}"/>
         <Button Command="{Binding Increment}" Width="100" Content="Increment"/>
         <Button Command="{Binding Decrement}" Width="100" Content="Decrement"/>
+        <Button Command="{Binding CauseCrash}" Width="100" Content="CauseCrash"/>
     </StackPanel>
 </Window>
